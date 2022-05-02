@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "840912445858",
+    "project_id": "shuttlelocationproject",
+    "storage_bucket": "shuttlelocationproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840912445858:android:f328584f9d2911041012fb",
+        "android_client_info": {
+          "package_name": "kr.rabbito.shuttlelocationproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840912445858-tm4tceppvvufkobu13b2a7rgua3tbo4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD82KUTLB2o0Ddb0ohCt_bjSeoCfFmLKAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840912445858-tm4tceppvvufkobu13b2a7rgua3tbo4s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840912445858:android:437df500c820cf2c1012fb",
+        "android_client_info": {
+          "package_name": "kr.rabbito.shuttlelocationprojectdriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840912445858-tm4tceppvvufkobu13b2a7rgua3tbo4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD82KUTLB2o0Ddb0ohCt_bjSeoCfFmLKAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840912445858-tm4tceppvvufkobu13b2a7rgua3tbo4s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
