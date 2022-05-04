@@ -19,8 +19,8 @@ fun getLocation(result: Array<Double>, locationManager: LocationManager, context
 
         override fun onLocationChanged(location: Location) {
             // 위치 정보 전달 목적으로 호출(자동으로 호출)
-            result[0] = location.longitude
-            result[1] = location.latitude
+            result[0] = location.latitude
+            result[1] = location.longitude
         }
         override fun onProviderEnabled(provider: String) {
             // provider가 사용 가능한 생태가 되는 순간 호출

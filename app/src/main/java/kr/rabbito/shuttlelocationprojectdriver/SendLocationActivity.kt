@@ -45,8 +45,9 @@ class SendLocationActivity : AppCompatActivity() {
     private fun makeLocationSendRoutine(ref: DatabaseReference, location: Location, group: String, id: String, data: Array<Double>): Job {
         return GlobalScope.launch {
             while (true) {
-                location.logitude = data[0]
-                location.latitude = data[1]
+                location.latitude = data[0]
+                location.longitude = data[1]
+
                 ref.child(group).child(id).setValue(location)
                 delay(1000)
             }
