@@ -26,28 +26,29 @@ class SendLocationActivity : AppCompatActivity() {
 
         val id = ref.push().key!!
 //        editor.putString("driver_id", id).apply()
-        var group = "tuk"
-        var location = Location("temp")
+        val name = "temp"
+        val group = "tuk"
+        val location = Location(name, 0.0, 0.0)
 
-        sendLocation_btn_startSend.setOnClickListener {
-            sendJob = makeSendRoutine(ref, location, group, id)
-            sendJob.start()
-        }
-        sendLocation_btn_stopSend.setOnClickListener { sendJob.cancel() }
-
+        // 위치 리스너 등록
         val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         val result = arrayOf(0.0, 0.0)  // 경도, 위도 저장되는 배열
         getLocation(result, locationManager, this, this)
+
+        sendLocation_btn_startSend.setOnClickListener {
+            sendJob = makeLocationSendRoutine(ref, location, group, id, result)
+            sendJob.start()
+        }
+        sendLocation_btn_stopSend.setOnClickListener { sendJob.cancel() }
     }
 
-    private fun makeSendRoutine(ref: DatabaseReference, location: Location, group: String, id: String): Job {
+    private fun makeLocationSendRoutine(ref: DatabaseReference, location: Location, group: String, id: String, data: Array<Double>): Job {
         return GlobalScope.launch {
-            var i = 0
             while (true) {
-                location.location = i.toString()
+                location.logitude = data[0]
+                location.latitude = data[1]
                 ref.child(group).child(id).setValue(location)
                 delay(1000)
-                i++
             }
         }
     }

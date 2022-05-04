@@ -5,7 +5,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class Location(
-    var location: String
+    val driverName: String,
+    var logitude: Double,
+    var latitude: Double
 ) : Parcelable {
-    constructor() : this("")
+    constructor() : this("", 0.0, 0.0)
 }
