@@ -1,5 +1,6 @@
 package kr.rabbito.shuttlelocationprojectdriver
 
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.firebase.database.DatabaseReference
@@ -10,6 +11,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kr.rabbito.shuttlelocationprojectdriver.data.Location
+import kr.rabbito.shuttlelocationprojectdriver.functions.getLocation
 
 class SendLocationActivity : AppCompatActivity() {
     private lateinit var sendJob: Job
@@ -32,6 +34,10 @@ class SendLocationActivity : AppCompatActivity() {
             sendJob.start()
         }
         sendLocation_btn_stopSend.setOnClickListener { sendJob.cancel() }
+
+        val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        val result = arrayOf(0.0, 0.0)  // 경도, 위도 저장되는 배열
+        getLocation(result, locationManager, this, this)
     }
 
     private fun makeSendRoutine(ref: DatabaseReference, location: Location, group: String, id: String): Job {
