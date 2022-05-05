@@ -28,7 +28,7 @@ class SendLocationActivity : AppCompatActivity() {
 //        editor.putString("driver_id", id).apply()
         val name = "temp"
         val group = "tuk"
-        val location = Location(name, 0.0, 0.0)
+        val location = Location(id, name, 0.0, 0.0)
 
         // 위치 리스너 등록
         val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
