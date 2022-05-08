@@ -29,6 +29,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    viewBinding{
+        // ViewBinding enabled gradle version 3.6.0 (4.0부터 buildFeatures() 사용 가능 )
+        enabled = true
+    }
 }
 
 dependencies {
