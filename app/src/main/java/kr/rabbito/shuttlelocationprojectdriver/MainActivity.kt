@@ -30,5 +30,4 @@ class MainActivity : AppCompatActivity() {
         mBinding = null
         super.onDestroy()
     }
-
 }
