@@ -38,8 +38,9 @@ class ServiceLocation : Service() {
             val serviceChannel = NotificationChannel("CHANNEL_ID",
                 "알림 설정 모드 타이틀",
                 NotificationManager.IMPORTANCE_DEFAULT)
-            val manager = getSystemService(NotificationManager::class.java)!!
-            manager!!.createNotificationChannel(serviceChannel)
+            //val manager = getSystemService(NotificationManager::class.java)!!
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE)as NotificationManager
+            manager.createNotificationChannel(serviceChannel)
         }
 
         val notificationIntent = Intent(this, MainActivity::class.java)
@@ -49,6 +50,8 @@ class ServiceLocation : Service() {
             .setContentText("위치정보 갱신 중")
             .setSmallIcon(R.mipmap.sym_def_app_icon)
             .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .setOngoing(false)
             .build()
         startForeground(1, notification)
         //여기까지 notification띄우기

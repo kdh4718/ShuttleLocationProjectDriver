@@ -40,6 +40,10 @@ class SendLocationActivity : AppCompatActivity() {
                 startForegroundService(background)
                 Log.d("서비스","서비스 시작,전환")
             }
+            else {
+                startService(background)
+                Log.d("서비스","8.0이하 서비스 시작,전환")
+            }
         }
         binding.sendLocationBtnStopSend.setOnClickListener {
             //sendJob.cancel()
