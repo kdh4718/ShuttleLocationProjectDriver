@@ -3,9 +3,9 @@ package kr.rabbito.shuttlelocationprojectdriver
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import kr.rabbito.shuttlelocationprojectdriver.databinding.ActivityMainBinding
 
-//
 class MainActivity : AppCompatActivity() {
 
     private var mBinding: ActivityMainBinding? = null
@@ -19,10 +19,16 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.mainBtnToSendLocation.setOnClickListener {
-            val intent = Intent(this, SendLocationActivity::class.java)
+        startLoading()
+    }
+
+    private fun startLoading() {
+        val handler = Handler()
+        handler.postDelayed({
+            val intent  = Intent(this, SendLocationActivity::class.java)
+            finish()
             startActivity(intent)
-        }
+        }, 1000)
     }
 
     override fun onDestroy() {

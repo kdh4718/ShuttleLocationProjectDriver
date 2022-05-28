@@ -1,10 +1,13 @@
 package kr.rabbito.shuttlelocationprojectdriver
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 
 //import kotlinx.android.synthetic.main.activity_send_location.*
 
@@ -19,6 +22,10 @@ class SendLocationActivity : AppCompatActivity() {
     //매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
 
+    private val FINISH_INTERVAL_TIME: Long = 2000
+    private var backPressedTime: Long = 0
+
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,6 +41,20 @@ class SendLocationActivity : AppCompatActivity() {
         var background : Intent = Intent(this, ServiceLocation::class.java)
         Log.d("서비스","두번째 액티비티 시작")
         binding.sendLocationBtnStartSend.setOnClickListener {
+            // 디자인
+            binding.sendLocationTvStart.setTextColor(Color.parseColor("#757575"))
+            binding.sendLocationTvStartDetail.setTextColor(Color.parseColor("#A4A4A4"))
+            binding.sendLocationIvIconGreen.setImageResource(R.drawable.sendlocation_icon_marker_green_clicked)
+            binding.sendLocationBtnStartSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
+            binding.sendLocationBtnStartSend.isClickable = false
+
+            binding.sendLocationTvStop.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_black))
+            binding.sendLocationTvStopDetail.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_drakgray))
+            binding.sendLocationIvIconRed.setImageResource(R.drawable.d_btnicon_marker_red)
+            binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.d_btn_send)
+            binding.sendLocationBtnStopSend.isClickable = true
+
+
 
             // 백그라운드에서 위치정보를 전송하기위해 서비스인텐트 실행,전환
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -46,6 +67,19 @@ class SendLocationActivity : AppCompatActivity() {
             }
         }
         binding.sendLocationBtnStopSend.setOnClickListener {
+            // 디자인
+            binding.sendLocationTvStart.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_black))
+            binding.sendLocationTvStartDetail.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_drakgray))
+            binding.sendLocationIvIconGreen.setImageResource(R.drawable.d_btnicon_marker_green)
+            binding.sendLocationBtnStartSend.setBackgroundResource(R.drawable.d_btn_send)
+            binding.sendLocationBtnStartSend.isClickable = true
+
+            binding.sendLocationTvStop.setTextColor(Color.parseColor("#757575"))
+            binding.sendLocationTvStopDetail.setTextColor(Color.parseColor("#A4A4A4"))
+            binding.sendLocationIvIconRed.setImageResource(R.drawable.sendlocation_icon_marker_red_clicked)
+            binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
+            binding.sendLocationBtnStopSend.isClickable = false
+
             //sendJob.cancel()
             /** sendstop버튼으로 서비스도 종료시킬려하는데
             앱을 실행중에 sednstart,sendstop하면 문제가 없음.
@@ -59,7 +93,22 @@ class SendLocationActivity : AppCompatActivity() {
             Log.d("서비스","서비스 종료")
         }
     }
-    //액티비티가 파괴될 때
+
+    // 뒤로가기 두 번 연속 터치 시 종료
+    override fun onBackPressed() {
+        val tempTime = System.currentTimeMillis()
+        val intervalTime: Long = tempTime - backPressedTime
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+            // 뒤로가기 버튼으로 종료 시 전송 서비스도 종료
+            binding.sendLocationBtnStopSend.callOnClick()
+            Log.d("서비스","서비스 종료")
+            finish()
+        } else {
+            backPressedTime = tempTime
+            Toast.makeText(applicationContext, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onDestroy() {
         // onDestroy 에서 binding class 인스턴스 참조 정리
         mBinding = null

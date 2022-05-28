@@ -44,11 +44,11 @@ class ServiceLocation : Service() {
         }
 
         val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         val notification: Notification = NotificationCompat.Builder(this, "CHANNEL_ID")
-            .setContentTitle("앱이름!")
-            .setContentText("위치정보 갱신 중")
-            .setSmallIcon(R.mipmap.sym_def_app_icon)
+            .setContentTitle("셔틀위치알리미")
+            .setContentText("실시간 위치 정보를 전송 중입니다.")
+            .setSmallIcon(resources.getIdentifier("location_icon", "drawable", this.packageName))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setOngoing(false)
@@ -92,7 +92,7 @@ class ServiceLocation : Service() {
         locationManager.removeUpdates(loc)
         //location 정보 전송을 종료시킴.
         sendJob.cancel()
-        Toast.makeText(this,"서비스 종료",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this,"위치 전송이 중단되었습니다.",Toast.LENGTH_SHORT).show()
     }
     private fun makeLocationSendRoutine(ref: DatabaseReference, location: Location, group: String, id: String, data: Array<Double>): Job {
         return GlobalScope.launch {
