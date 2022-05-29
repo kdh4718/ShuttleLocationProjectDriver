@@ -1,11 +1,13 @@
 package kr.rabbito.shuttlelocationprojectdriver
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.telephony.ServiceState
 import android.util.Log
 import android.widget.Toast
 
