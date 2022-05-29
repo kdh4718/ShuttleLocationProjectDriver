@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/loading_Siheung_Rordmark"
+        android:id="@+id/main_Siheung_Rordmark"
         android:layout_width="164dp"
         android:layout_height="180dp"
         android:src="@drawable/loading_siheung_wordmark"
@@ -18,21 +18,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/loading_App_Icon"
+        android:id="@+id/main_App_Icon"
         android:layout_width="124dp"
         android:layout_height="174dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/bus_icon"
-        app:layout_constraintBottom_toTopOf="@+id/loading_text_wait"
+        app:layout_constraintBottom_toTopOf="@+id/main_text_wait"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loading_text_shuttle"
+        app:layout_constraintTop_toBottomOf="@+id/main_text_shuttle"
         app:layout_constraintVertical_bias="0.8"
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/loading_text_shuttle"
+        android:id="@+id/main_text_shuttle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/suncheon_b"
@@ -40,11 +40,11 @@
         android:text="셔틀 "
         android:textColor="@color/colorAccent"
         android:textSize="28dp"
-        app:layout_constraintEnd_toStartOf="@+id/loading_text_location"
-        app:layout_constraintTop_toTopOf="@id/loading_text_location"/>
+        app:layout_constraintEnd_toStartOf="@+id/main_text_location"
+        app:layout_constraintTop_toTopOf="@id/main_text_location"/>
 
     <TextView
-        android:id="@+id/loading_text_location"
+        android:id="@+id/main_text_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/suncheon_b"
@@ -55,7 +55,7 @@
         android:layout_marginTop="151dp"
         android:layout_marginEnd="22dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/loading_Siheung_Rordmark"/>
+        app:layout_constraintTop_toTopOf="@id/main_Siheung_Rordmark"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -66,12 +66,12 @@
         android:text="운전자용"
         android:textColor="@color/colorAccent"
         android:textSize="22sp"
-        app:layout_constraintTop_toBottomOf="@id/loading_text_location"
-        app:layout_constraintEnd_toEndOf="@id/loading_text_location"/>
+        app:layout_constraintTop_toBottomOf="@id/main_text_location"
+        app:layout_constraintEnd_toEndOf="@id/main_text_location"/>
 
 
     <TextView
-        android:id="@+id/loading_text_wait"
+        android:id="@+id/main_text_wait"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="42dp"
