@@ -33,6 +33,9 @@ class ServiceLocation : Service() {
     var result = arrayOf(37.3395, 126.7325) //초기값을 0,0 -> 학교정류장으로 변경.
     private lateinit var timer:CountDownTimer //일정시간 이후 스레드 종료를 위한 타이머객체 변수.
 
+    private lateinit var ref: DatabaseReference
+    var id = "temp"
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //서비스가 호출될때?마다 실행됨. 여러번 호출가능하므로 여러개의 쓰레드가
         //실행될 가능성이 있음. 그래서 위치정보 전송은 onCreate()에서 실행됨.
@@ -72,8 +75,21 @@ class ServiceLocation : Service() {
         Log.d("서비스","서비스 생성됨")
 
         //여기부터 위치정보 전송
-        val ref = FirebaseDatabase.getInstance().getReference("Driver")
-        val id = ref.push().key!!
+        ref = FirebaseDatabase.getInstance().getReference("Driver")
+        val first = getSharedPreferences("basic", MODE_PRIVATE)
+        val pref = getSharedPreferences("profile", MODE_PRIVATE)
+
+        // 앱 설치한 이후 최초로 실행한 서비스 인지 확인해 아이디 생성, 저장 또는 로드
+        id = if (first.getBoolean("isFirst", true)) {
+            ref.push().key!!
+        } else {
+            pref.getString("user_id", "temp")!!
+        }
+        if (first.getBoolean("isFirst", true)) {
+            pref.edit().putString("user_id", id).apply()
+            first.edit().putBoolean("isFirst", false).apply()
+        }
+
         val name = "temp"
         val group = "tuk"
         val location = Location(id, name, 0.0, 0.0)
@@ -106,6 +122,10 @@ class ServiceLocation : Service() {
         // 서비스 생성주기중 종료될때 실행되는 메소드.
         super.onDestroy()
         Log.d("서비스","서비스 파괴됨")
+
+        // 그룹명은 임시로 사용
+        // 서비스 종료 시 위치 정보 제거
+        ref.child("tuk").child(id).removeValue()
 
         //locationManager의 locationListener의 주기적 업데이트를 삭제해줌.
         locationManager.removeUpdates(loc)
