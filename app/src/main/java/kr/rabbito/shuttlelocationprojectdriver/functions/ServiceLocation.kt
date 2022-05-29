@@ -7,7 +7,9 @@ import android.content.Intent
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
+import android.os.CountDownTimer
 import android.os.IBinder
+import android.os.SystemClock.sleep
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -26,6 +28,10 @@ class ServiceLocation : Service() {
     private lateinit var sendJob: Job
     private lateinit var locationManager :LocationManager
     private lateinit var loc : LocationListener
+
+    val mid= arrayOf(37.3456, 126.7392)     //운전자가 범위내에 있는지 확인을 위한 중간지점.
+    var result = arrayOf(37.3395, 126.7325) //초기값을 0,0 -> 학교정류장으로 변경.
+    private lateinit var timer:CountDownTimer //일정시간 이후 스레드 종료를 위한 타이머객체 변수.
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //서비스가 호출될때?마다 실행됨. 여러번 호출가능하므로 여러개의 쓰레드가
@@ -71,13 +77,26 @@ class ServiceLocation : Service() {
         val name = "temp"
         val group = "tuk"
         val location = Location(id, name, 0.0, 0.0)
-        val result = arrayOf(0.0, 0.0)  // 경도, 위도 저장되는 배열
+        //val result = arrayOf(0.0, 0.0)  // 경도, 위도 저장되는 배열
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        //getBackLocation(result, locationManager, this)
+
         sendJob = makeLocationSendRoutine(ref, location, group, id, result)
         sendJob.start()
         loc = getBackLocation(result, locationManager, this)
         Log.d("서비스","위치정보전송 시작?")
+
+        //타이머 객체 시간,주기,할일 설정 -- 8시간(28800초)동안,10분 주기
+        timer = object : CountDownTimer(1000*600*6*8,1000*600){
+            override fun onTick(p0: Long) {//주기마다 할일 메소드
+                //범위내에 있는지 체크, 벗어날 시 서비스 종료.
+                Log.d("서비스","거리를 확인합니다. 현재위치:${result[0]},${result[1]}")
+                if(getDistance(result,mid)>1000) onDestroy()
+            }
+            override fun onFinish() {//타이머 종료시 할일 메소드
+                Log.d("서비스","타이머종료")
+                onDestroy() //타이머 종료시 서비스 종료시킴
+            }
+        }.start()
     }
     override fun onBind(intent: Intent): IBinder {
         TODO("Return the communication channel to the service.")
@@ -92,6 +111,7 @@ class ServiceLocation : Service() {
         locationManager.removeUpdates(loc)
         //location 정보 전송을 종료시킴.
         sendJob.cancel()
+        timer.cancel()    //서비스 종료시 타이머도 종료시킴.
         Toast.makeText(this,"위치 전송이 중단되었습니다.",Toast.LENGTH_SHORT).show()
     }
     private fun makeLocationSendRoutine(ref: DatabaseReference, location: Location, group: String, id: String, data: Array<Double>): Job {
