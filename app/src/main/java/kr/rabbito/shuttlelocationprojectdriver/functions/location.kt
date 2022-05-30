@@ -1,6 +1,7 @@
 package kr.rabbito.shuttlelocationprojectdriver.functions
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -9,6 +10,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
+
 
 fun getLocation(result: Array<Double>, locationManager: LocationManager, context: Context, activity: Activity) {
     val locationListener = object : LocationListener {
