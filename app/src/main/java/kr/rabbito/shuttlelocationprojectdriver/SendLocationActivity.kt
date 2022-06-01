@@ -2,6 +2,7 @@ package kr.rabbito.shuttlelocationprojectdriver
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.telephony.ServiceState
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 
 //import kotlinx.android.synthetic.main.activity_send_location.*
@@ -23,10 +25,9 @@ class SendLocationActivity : AppCompatActivity() {
     private var mBinding: ActivitySendLocationBinding? = null
     //매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
-
+    lateinit var background : Intent
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
-
     @SuppressLint("UseCompatLoadingForColorStateLists")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +40,7 @@ class SendLocationActivity : AppCompatActivity() {
         // 인스턴스를 활용하여 생성된 뷰를액티비티에 표시
         setContentView(binding.root)
 
-
-        var background : Intent = Intent(this, ServiceLocation::class.java)
+        background = Intent(this, ServiceLocation::class.java)
         Log.d("서비스","두번째 액티비티 시작")
         binding.sendLocationBtnStartSend.setOnClickListener {
             // 디자인
@@ -82,7 +82,6 @@ class SendLocationActivity : AppCompatActivity() {
             binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
             binding.sendLocationBtnStopSend.isClickable = false
 
-            //sendJob.cancel()
             /** sendstop버튼으로 서비스도 종료시킬려하는데
             앱을 실행중에 sednstart,sendstop하면 문제가 없음.
             --> sendjob,serviex가 모두 실행중에 있으므로 그런거같음
@@ -114,6 +113,7 @@ class SendLocationActivity : AppCompatActivity() {
     override fun onDestroy() {
         // onDestroy 에서 binding class 인스턴스 참조 정리
         mBinding = null
+        stopService(background)
         Log.d("서비스","두번째 액티비티 종료")
         super.onDestroy()
     }
