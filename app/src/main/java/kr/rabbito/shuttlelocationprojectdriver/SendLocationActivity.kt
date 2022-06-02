@@ -39,6 +39,7 @@ class SendLocationActivity : AppCompatActivity() {
         //getRoot 메소드로 레이아웃 내부의 최상위 위치 뷰의
         // 인스턴스를 활용하여 생성된 뷰를액티비티에 표시
         setContentView(binding.root)
+        overridePendingTransition(0, 0)
 
         background = Intent(this, ServiceLocation::class.java)
         Log.d("서비스","두번째 액티비티 시작")
@@ -93,6 +94,11 @@ class SendLocationActivity : AppCompatActivity() {
             stopService(background)
             Log.d("서비스","서비스 종료")
         }
+
+        binding.sendLocationBtnToSetting.setOnClickListener {
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     // 뒤로가기 두 번 연속 터치 시 종료
@@ -116,5 +122,10 @@ class SendLocationActivity : AppCompatActivity() {
         stopService(background)
         Log.d("서비스","두번째 액티비티 종료")
         super.onDestroy()
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, 0)
     }
 }

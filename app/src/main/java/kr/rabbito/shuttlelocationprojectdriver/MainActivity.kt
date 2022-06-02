@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+        overridePendingTransition(0, 0)
 
         startLoading()
     }
@@ -35,5 +36,10 @@ class MainActivity : AppCompatActivity() {
         // onDestroy 에서 binding class 인스턴스 참조를 정리해주어야 한다.
         mBinding = null
         super.onDestroy()
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, 0)
     }
 }

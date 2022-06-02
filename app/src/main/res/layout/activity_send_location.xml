@@ -119,6 +119,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
+        android:id="@+id/sendLocation_btn_toSetting"
         android:layout_width="62dp"
         android:layout_height="62dp"
         android:layout_marginBottom="19dp"

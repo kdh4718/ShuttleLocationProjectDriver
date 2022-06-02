@@ -12,6 +12,7 @@ android {
         applicationId "kr.rabbito.shuttlelocationprojectdriver"
         minSdkVersion 19
         targetSdkVersion 31
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
 
@@ -69,4 +70,5 @@ dependencies {
 
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
+    implementation 'androidx.multidex:multidex:2.0.1'
 }

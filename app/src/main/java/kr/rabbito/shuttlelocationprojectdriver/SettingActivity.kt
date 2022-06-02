@@ -16,6 +16,7 @@ class SettingActivity : AppCompatActivity() {
 
         mBinding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        overridePendingTransition(0, 0)
 
         binding.settingClSettingInfo.setOnClickListener {
             val dialogView = View.inflate(this, R.layout.info_dialog, null)
@@ -26,5 +27,14 @@ class SettingActivity : AppCompatActivity() {
             dlg.setView(dialogView)
             dlg.show()
         }
+
+        binding.settingBtnBack.setOnClickListener {
+            finish()
+        }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, 0)
     }
 }
