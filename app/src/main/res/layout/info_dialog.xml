@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="22dp">
+
+    <TextView
+        android:id="@+id/infodialog_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/pretendard_semibold"
+        android:includeFontPadding="false"
+        android:text="앱 정보"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/infodialog_tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="22dp"
+        android:fontFamily="@font/pretendard_regular"
+        android:textColor="@color/colorBlack"
+        android:includeFontPadding="false"
+        app:layout_constraintHorizontal_bias="0"
+        android:text="@string/app_info"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/infodialog_tv_title" />
+
+    <TextView
+        android:id="@+id/infodialog_btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="22dp"
+        android:fontFamily="@font/pretendard_semibold"
+        android:includeFontPadding="false"
+        android:paddingStart="13dp"
+        android:paddingTop="13dp"
+        android:paddingEnd="11dp"
+        android:paddingBottom="11dp"
+        android:text="닫기"
+        android:textColor="@drawable/tv_d_buttontext_primary"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/infodialog_tv_content" />
+</androidx.constraintlayout.widget.ConstraintLayout>
