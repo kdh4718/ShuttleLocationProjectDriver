@@ -9,6 +9,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import androidx.core.app.ActivityCompat
 
 
@@ -23,6 +24,7 @@ fun getLocation(result: Array<Double>, locationManager: LocationManager, context
             // 위치 정보 전달 목적으로 호출(자동으로 호출)
             result[0] = location.latitude
             result[1] = location.longitude
+            Log.d("서비스","주기적 갱신중,${result[0]},${result[1]}")
         }
         override fun onProviderEnabled(provider: String) {
             // provider가 사용 가능한 생태가 되는 순간 호출
