@@ -91,7 +91,7 @@ class ServiceLocation : Service() {
             first.edit().putBoolean("isFirst", false).apply()
         }
 
-        val name = "temp"
+        val name = "셔틀"
         val group = "tuk"
         val location = Location(id, name, 0.0, 0.0)
         //val result = arrayOf(0.0, 0.0)  // 경도, 위도 저장되는 배열
