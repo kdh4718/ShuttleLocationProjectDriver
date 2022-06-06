@@ -53,7 +53,7 @@ class SendLocationActivity : AppCompatActivity() {
             getLocation(myLoc,locManager,this,this) //내위치를 갱신합니다.
             var mid= arrayOf(37.3456, 126.7392) //작업반경 위치를 설정합니다.
             if(getDistance(myLoc,mid)>1200) //작업반경 위치로부터 1.2km 밖에 있는지 확인합니다.
-                Toast.makeText(applicationContext, "작업반경내에서 벗어났습니다.\n몇 초뒤 다시 눌러주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "경로에서 벗어났거나 로딩중입니다.\n잠시 후에 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
             else{   //작업반경 내에 있는경우 버튼토글 변경, 서비스를 시작합니다.
                 // 디자인
                 binding.sendLocationTvStart.setTextColor(Color.parseColor("#757575"))
