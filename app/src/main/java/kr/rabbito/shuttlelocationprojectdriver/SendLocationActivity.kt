@@ -2,8 +2,10 @@ package kr.rabbito.shuttlelocationprojectdriver
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.location.LocationManager
 import android.os.Build
@@ -13,6 +15,7 @@ import android.telephony.ServiceState
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 //import kotlinx.android.synthetic.main.activity_send_location.*
 
@@ -70,7 +73,7 @@ class SendLocationActivity : AppCompatActivity() {
                 // 백그라운드에서 위치정보를 전송하기위해 서비스인텐트 실행,전환
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(background)
-                    Log.d("서비스","서비스 시작,전환")
+                    Log.d("서비스","StartButton")
                     Toast.makeText(applicationContext, "위치정보 전송을 시작합니다.", Toast.LENGTH_SHORT).show()
                 }
                 else {
@@ -102,7 +105,8 @@ class SendLocationActivity : AppCompatActivity() {
             ** 위치정보 전송시스템을 서비스에서만 작동하게 하는게 필요해보임.
             서버에 데이터 보내는 시스템을 몰라서 잘 건드릴수가 없음..  **/
             stopService(background)
-            Log.d("서비스","서비스 종료")
+            Log.d("서비스","StopButton")
+            Toast.makeText(this,"위치 전송이 중단되었습니다.",Toast.LENGTH_SHORT).show()
         }
 
         binding.sendLocationBtnToSetting.setOnClickListener {
@@ -111,6 +115,23 @@ class SendLocationActivity : AppCompatActivity() {
         }
     }
 
+    //서비스가 종료될때 브로드 캐스트를 수신한다.
+    var receiver : BroadcastReceiver = object : BroadcastReceiver(){
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            var servData = intent.getStringExtra("data")
+            Log.d("서비스","브로드캐스트 수신")
+            //브로드 캐스트를 수신하면 stopButton을 누른다.
+            binding.sendLocationBtnStopSend.callOnClick()
+        }
+    }
+
+    //onResume 호출될때 로컬브로드 캐스트 등록
+    override fun onResume() {
+        super.onResume()
+        var intentFilter : IntentFilter = IntentFilter()
+        intentFilter.addAction("service_down")
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter)
+    }
     // 뒤로가기 두 번 연속 터치 시 종료
     override fun onBackPressed() {
         val tempTime = System.currentTimeMillis()
