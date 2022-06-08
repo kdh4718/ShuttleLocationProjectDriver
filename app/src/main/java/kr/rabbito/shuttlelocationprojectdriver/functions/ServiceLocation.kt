@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.GlobalScope
@@ -42,7 +43,7 @@ class ServiceLocation : Service() {
         //서비스가 호출될때?마다 실행됨. 여러번 호출가능하므로 여러개의 쓰레드가
         //실행될 가능성이 있음. 그래서 위치정보 전송은 onCreate()에서 실행됨.
         if(intent==null) START_STICKY
-        Log.d("서비스","서비스 전환됨")
+        Log.d("서비스","서비스 onStartCommand()")
 
         //onStartCommand()에서는 notification만 만들어줌.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -73,7 +74,7 @@ class ServiceLocation : Service() {
     override fun onCreate() {
         //서비스 생성주기중 생성될때 실행되는부분.
         super.onCreate()
-        Log.d("서비스","서비스 생성됨")
+        Log.d("서비스","서비스 onCreate()")
 
         //여기부터 위치정보 전송
         ref = FirebaseDatabase.getInstance().getReference("Driver")
@@ -122,7 +123,7 @@ class ServiceLocation : Service() {
     override fun onDestroy() {
         // 서비스 생성주기중 종료될때 실행되는 메소드.
         super.onDestroy()
-        Log.d("서비스","서비스 파괴됨")
+        Log.d("서비스","서비스 onDestroy()")
 
         // 그룹명은 임시로 사용
         // 서비스 종료 시 위치 정보 제거
@@ -141,11 +142,17 @@ class ServiceLocation : Service() {
             .setSmallIcon(resources.getIdentifier("location_icon", "drawable", this.packageName))
             .build()
         startForeground(100,notification)
-        Toast.makeText(this,"위치 전송이 중단되었습니다.",Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this,"위치 전송이 중단되었습니다.",Toast.LENGTH_SHORT).show()
+
+        /** 서비스가 종료될때 액티비티에 브로드 캐스트 전송 **/
+        var intent :Intent = Intent("service_down")
+        intent.putExtra("data", "service")
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        Log.d("서비스","브로드캐스트 전송")
     }
     private fun makeLocationSendRoutine(ref: DatabaseReference, location: Location, group: String, id: String, data: Array<Double>): Job {
         return GlobalScope.launch {
-            var i:Int = 0
+            var i:Int = 1
             while (true) {
                 location.latitude = data[0]
                 location.longitude = data[1]
