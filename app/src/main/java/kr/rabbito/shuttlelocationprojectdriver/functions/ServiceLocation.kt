@@ -103,11 +103,11 @@ class ServiceLocation : Service() {
         Log.d("서비스","위치정보전송 시작?")
 
         //타이머 객체 시간,주기,할일 설정 -- 8시간(28800초)동안,10분 주기
-        timer = object : CountDownTimer(1000*600*6*8,1000*6){
+        timer = object : CountDownTimer(1000*600*6*8,100000*6){
             override fun onTick(p0: Long) {//주기마다 할일 메소드
                 //범위내에 있는지 체크, 벗어날 시 서비스 종료.
-                Log.d("서비스","거리를 확인합니다. 현재위치:${result[0]},${result[1]}")
-                if(getDistance(result,mid)>1000) onDestroy()
+                //Log.d("서비스","거리를 확인합니다. 현재위치:${result[0]},${result[1]}")
+                if(getDistance(result,mid)>1200) onDestroy()
             }
             override fun onFinish() {//타이머 종료시 할일 메소드
                 Log.d("서비스","타이머종료")

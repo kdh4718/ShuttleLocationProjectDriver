@@ -5,6 +5,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,8 @@ import android.widget.Toast
 import kotlinx.coroutines.Job
 import kr.rabbito.shuttlelocationprojectdriver.databinding.ActivitySendLocationBinding
 import kr.rabbito.shuttlelocationprojectdriver.functions.ServiceLocation
+import kr.rabbito.shuttlelocationprojectdriver.functions.getDistance
+import kr.rabbito.shuttlelocationprojectdriver.functions.getLocation
 
 class SendLocationActivity : AppCompatActivity() {
 
@@ -42,29 +45,38 @@ class SendLocationActivity : AppCompatActivity() {
         overridePendingTransition(0, 0)
 
         background = Intent(this, ServiceLocation::class.java)
+        var myLoc = arrayOf(0.0,0.0)
+        var locManager = getSystemService(LOCATION_SERVICE)as LocationManager
         Log.d("서비스","두번째 액티비티 시작")
         binding.sendLocationBtnStartSend.setOnClickListener {
-            // 디자인
-            binding.sendLocationTvStart.setTextColor(Color.parseColor("#757575"))
-            binding.sendLocationTvStartDetail.setTextColor(Color.parseColor("#A4A4A4"))
-            binding.sendLocationIvIconGreen.setImageResource(R.drawable.sendlocation_icon_marker_green_clicked)
-            binding.sendLocationBtnStartSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
-            binding.sendLocationBtnStartSend.isClickable = false
-            binding.sendLocationTvStop.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_black))
-            binding.sendLocationTvStopDetail.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_drakgray))
-            binding.sendLocationIvIconRed.setImageResource(R.drawable.d_btnicon_marker_red)
-            binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.d_btn_send)
-            binding.sendLocationBtnStopSend.isClickable = true
+            //버튼을 눌렀을때 내위치가 반경내에 있는지 확인합니다.
+            getLocation(myLoc,locManager,this,this) //내위치를 갱신합니다.
+            var mid= arrayOf(37.3456, 126.7392) //작업반경 위치를 설정합니다.
+            if(getDistance(myLoc,mid)>1200) //작업반경 위치로부터 1.2km 밖에 있는지 확인합니다.
+                Toast.makeText(applicationContext, "경로에서 벗어났거나 로딩중입니다.\n잠시 후에 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+            else{   //작업반경 내에 있는경우 버튼토글 변경, 서비스를 시작합니다.
+                // 디자인
+                binding.sendLocationTvStart.setTextColor(Color.parseColor("#757575"))
+                binding.sendLocationTvStartDetail.setTextColor(Color.parseColor("#A4A4A4"))
+                binding.sendLocationIvIconGreen.setImageResource(R.drawable.sendlocation_icon_marker_green_clicked)
+                binding.sendLocationBtnStartSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
+                binding.sendLocationBtnStartSend.isClickable = false
 
-
-            // 백그라운드에서 위치정보를 전송하기위해 서비스인텐트 실행,전환
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(background)
-                Log.d("서비스","서비스 시작,전환")
-            }
-            else {
-                startService(background)
-                Log.d("서비스","8.0이하 서비스 시작,전환")
+                binding.sendLocationTvStop.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_black))
+                binding.sendLocationTvStopDetail.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_drakgray))
+                binding.sendLocationIvIconRed.setImageResource(R.drawable.d_btnicon_marker_red)
+                binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.d_btn_send)
+                binding.sendLocationBtnStopSend.isClickable = true
+                // 백그라운드에서 위치정보를 전송하기위해 서비스인텐트 실행,전환
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(background)
+                    Log.d("서비스","서비스 시작,전환")
+                    Toast.makeText(applicationContext, "위치정보 전송을 시작합니다.", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    startService(background)
+                    Log.d("서비스","8.0이하 서비스 시작,전환")
+                }
             }
         }
         binding.sendLocationBtnStopSend.setOnClickListener {
