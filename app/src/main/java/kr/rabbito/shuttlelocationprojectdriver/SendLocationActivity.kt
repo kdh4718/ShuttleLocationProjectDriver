@@ -50,13 +50,11 @@ class SendLocationActivity : AppCompatActivity() {
             binding.sendLocationIvIconGreen.setImageResource(R.drawable.sendlocation_icon_marker_green_clicked)
             binding.sendLocationBtnStartSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
             binding.sendLocationBtnStartSend.isClickable = false
-
             binding.sendLocationTvStop.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_black))
             binding.sendLocationTvStopDetail.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_drakgray))
             binding.sendLocationIvIconRed.setImageResource(R.drawable.d_btnicon_marker_red)
             binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.d_btn_send)
             binding.sendLocationBtnStopSend.isClickable = true
-
 
 
             // 백그라운드에서 위치정보를 전송하기위해 서비스인텐트 실행,전환
