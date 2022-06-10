@@ -3,11 +3,21 @@ package kr.rabbito.shuttlelocationprojectdriver
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kr.rabbito.shuttlelocationprojectdriver.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -26,16 +36,26 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         overridePendingTransition(0, 0)
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            var permissions = arrayOf(
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            ActivityCompat.requestPermissions(this, permissions, LOCATION_REQUEST)
-        } else {
-            startLoading()
-        }
+        Dexter.withActivity(this)
+            .withPermissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) { /* ... */
+                    report.let {
+                        if (report.areAllPermissionsGranted()) {
+                            startLoading()
+                        } else {
+                            showSettingsDialog()
+                        }
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(permissions: List<PermissionRequest>, token: PermissionToken) {
+                    showSettingsDialog()
+                }
+            }).check()
     }
 
     private fun startLoading() {
@@ -47,34 +67,29 @@ class MainActivity : AppCompatActivity() {
         }, 1000)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode === LOCATION_REQUEST) {
-            if (grantResults.size > 0) {
-                for (grant in grantResults) {
-                    // 권한 획득하지 못한 경우
-                    if (grant != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(this, "앱 사용을 위해서는 위치 권한이 필요합니다. 앱을 재시작 해주세요.", Toast.LENGTH_SHORT).show()
-                    } else {    // 권한 획득한 경우
-                        if (ActivityCompat.checkSelfPermission(
-                                this,
-                                Manifest.permission.ACCESS_FINE_LOCATION
-                            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                                this,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            ) == PackageManager.PERMISSION_GRANTED
-                        ) {
-                            startLoading()
-                        }
-                    }
-                }
-            }
+    private fun showSettingsDialog() {
+        val dialogView = View.inflate(this, R.layout.permission_dialog, null)
+        val permissionDialog = AlertDialog.Builder(this)
+        val dlg = permissionDialog.create()
+        val permission_btn_ok = dialogView.findViewById<TextView>(R.id.permissionDialog_btn_toSetting)
+        val permission_btn_cancel = dialogView.findViewById<TextView>(R.id.permissionDialog_btn_cancel)
+        permission_btn_ok.setOnClickListener {
+            dlg.cancel()
+            openSettings()
         }
+        permission_btn_cancel.setOnClickListener {
+            dlg.cancel()
+        }
+        dlg.setView(dialogView)
+        dlg.show()
+    }
+
+    // 어플리케이션 정보 설정 페이지
+    private fun openSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri: Uri = Uri.fromParts("package", packageName, null)
+        intent.data = uri
+        startActivityForResult(intent, 101)
     }
 
     override fun onDestroy() {
