@@ -79,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         }
         permission_btn_cancel.setOnClickListener {
             dlg.cancel()
+            Toast.makeText(this, "앱 실행을 위해서는 위치 권한이 필요합니다. 앱을 재시작 해주세요.", Toast.LENGTH_SHORT).show()
         }
         dlg.setView(dialogView)
         dlg.show()
