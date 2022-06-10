@@ -1,7 +1,6 @@
 package kr.rabbito.shuttlelocationprojectdriver
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,19 +10,14 @@ import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.telephony.ServiceState
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 //import kotlinx.android.synthetic.main.activity_send_location.*
 
-import kotlinx.coroutines.Job
 import kr.rabbito.shuttlelocationprojectdriver.databinding.ActivitySendLocationBinding
-import kr.rabbito.shuttlelocationprojectdriver.functions.ServiceLocation
-import kr.rabbito.shuttlelocationprojectdriver.functions.getDistance
-import kr.rabbito.shuttlelocationprojectdriver.functions.getLocation
+import kr.rabbito.shuttlelocationprojectdriver.functions.*
 
 class SendLocationActivity : AppCompatActivity() {
 
@@ -47,7 +41,8 @@ class SendLocationActivity : AppCompatActivity() {
         setContentView(binding.root)
         overridePendingTransition(0, 0)
 
-        background = Intent(this, ServiceLocation::class.java)
+        //background = Intent(this, ServiceLocation::class.java)
+        background = Intent(this, ServiceLocation2::class.java)
         var myLoc = arrayOf(0.0,0.0)
         var locManager = getSystemService(LOCATION_SERVICE)as LocationManager
         Log.d("서비스","두번째 액티비티 시작")

@@ -22,7 +22,7 @@ fun getBackLocation(result:Array<Double>, locationManager: LocationManager, cont
         override fun onLocationChanged(location: Location) {
             result[0]=location.latitude
             result[1]=location.longitude
-            Log.d("서비스","주기적 갱신중,${result[0]},${result[1]}")
+            Log.d("서비스","getBackLocation,${result[0]},${result[1]}")
         }
     }
     if (ActivityCompat.checkSelfPermission(context,
