@@ -1,26 +1,23 @@
 package kr.rabbito.shuttlelocationprojectdriver
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.telephony.ServiceState
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 //import kotlinx.android.synthetic.main.activity_send_location.*
 
-import kotlinx.coroutines.Job
 import kr.rabbito.shuttlelocationprojectdriver.databinding.ActivitySendLocationBinding
-import kr.rabbito.shuttlelocationprojectdriver.functions.ServiceLocation
-import kr.rabbito.shuttlelocationprojectdriver.functions.getDistance
-import kr.rabbito.shuttlelocationprojectdriver.functions.getLocation
+import kr.rabbito.shuttlelocationprojectdriver.functions.*
 
 class SendLocationActivity : AppCompatActivity() {
 
@@ -34,7 +31,6 @@ class SendLocationActivity : AppCompatActivity() {
     @SuppressLint("UseCompatLoadingForColorStateLists")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         //자동 생성된 view Binding 클래스에서 inflate라는 메소드를 활용해서
         //약티비티에서 사용할 바인딩 클래스의 인스턴스 생성
         mBinding = ActivitySendLocationBinding.inflate(layoutInflater)
@@ -42,41 +38,38 @@ class SendLocationActivity : AppCompatActivity() {
         //getRoot 메소드로 레이아웃 내부의 최상위 위치 뷰의
         // 인스턴스를 활용하여 생성된 뷰를액티비티에 표시
         setContentView(binding.root)
+
         overridePendingTransition(0, 0)
 
-        background = Intent(this, ServiceLocation::class.java)
-        var myLoc = arrayOf(0.0,0.0)
-        var locManager = getSystemService(LOCATION_SERVICE)as LocationManager
+        background = Intent(this, ServiceLocation2::class.java)
+
         Log.d("서비스","두번째 액티비티 시작")
         binding.sendLocationBtnStartSend.setOnClickListener {
-            //버튼을 눌렀을때 내위치가 반경내에 있는지 확인합니다.
-            getLocation(myLoc,locManager,this,this) //내위치를 갱신합니다.
-            var mid= arrayOf(37.3456, 126.7392) //작업반경 위치를 설정합니다.
-            if(getDistance(myLoc,mid)>1200) //작업반경 위치로부터 1.2km 밖에 있는지 확인합니다.
-                Toast.makeText(applicationContext, "경로에서 벗어났거나 로딩중입니다.\n잠시 후에 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
-            else{   //작업반경 내에 있는경우 버튼토글 변경, 서비스를 시작합니다.
-                // 디자인
-                binding.sendLocationTvStart.setTextColor(Color.parseColor("#757575"))
-                binding.sendLocationTvStartDetail.setTextColor(Color.parseColor("#A4A4A4"))
-                binding.sendLocationIvIconGreen.setImageResource(R.drawable.sendlocation_icon_marker_green_clicked)
-                binding.sendLocationBtnStartSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
-                binding.sendLocationBtnStartSend.isClickable = false
+            // 디자인
+            binding.sendLocationTvStart.setTextColor(Color.parseColor("#757575"))
+            binding.sendLocationTvStartDetail.setTextColor(Color.parseColor("#A4A4A4"))
+            binding.sendLocationIvIconGreen.setImageResource(R.drawable.sendlocation_icon_marker_green_clicked)
+            binding.sendLocationBtnStartSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
+            binding.sendLocationBtnStartSend.isClickable = false
 
-                binding.sendLocationTvStop.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_black))
-                binding.sendLocationTvStopDetail.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_drakgray))
-                binding.sendLocationIvIconRed.setImageResource(R.drawable.d_btnicon_marker_red)
-                binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.d_btn_send)
-                binding.sendLocationBtnStopSend.isClickable = true
-                // 백그라운드에서 위치정보를 전송하기위해 서비스인텐트 실행,전환
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(background)
-                    Log.d("서비스","서비스 시작,전환")
-                    Toast.makeText(applicationContext, "위치정보 전송을 시작합니다.", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    startService(background)
-                    Log.d("서비스","8.0이하 서비스 시작,전환")
-                }
+            binding.sendLocationTvStop.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_black))
+            binding.sendLocationTvStopDetail.setTextColor(resources.getColorStateList(R.color.tv_d_buttontext_drakgray))
+            binding.sendLocationIvIconRed.setImageResource(R.drawable.d_btnicon_marker_red)
+            binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.d_btn_send)
+            binding.sendLocationBtnStopSend.isClickable = true
+            /** 버튼상태 저장(시작-off,스탑-on) **/
+            val start = arrayOf(false,true)
+            saveData(start,this)
+
+            // 백그라운드에서 위치정보를 전송하기위해 서비스인텐트 실행,전환
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(background)
+                Log.d("서비스","StartButton")
+                Toast.makeText(applicationContext, "위치정보 전송을 시작합니다.", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                startService(background)
+                Log.d("서비스", "8.0이하 서비스 시작,전환")
             }
         }
         binding.sendLocationBtnStopSend.setOnClickListener {
@@ -92,6 +85,9 @@ class SendLocationActivity : AppCompatActivity() {
             binding.sendLocationIvIconRed.setImageResource(R.drawable.sendlocation_icon_marker_red_clicked)
             binding.sendLocationBtnStopSend.setBackgroundResource(R.drawable.sendlocation_btn_send_clicked)
             binding.sendLocationBtnStopSend.isClickable = false
+            /** 버튼상태저장(시작-on,스탑-off) **/
+            val stop=arrayOf(true,false)
+            saveData(stop,this)
 
             /** sendstop버튼으로 서비스도 종료시킬려하는데
             앱을 실행중에 sednstart,sendstop하면 문제가 없음.
@@ -102,13 +98,35 @@ class SendLocationActivity : AppCompatActivity() {
             ** 위치정보 전송시스템을 서비스에서만 작동하게 하는게 필요해보임.
             서버에 데이터 보내는 시스템을 몰라서 잘 건드릴수가 없음..  **/
             stopService(background)
-            Log.d("서비스","서비스 종료")
+            Log.d("서비스","StopButton")
+            Toast.makeText(this,"위치 전송이 중단되었습니다.",Toast.LENGTH_SHORT).show()
         }
-
         binding.sendLocationBtnToSetting.setOnClickListener {
             val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    //서비스가 종료될때 브로드 캐스트를 수신한다.
+    var receiver : BroadcastReceiver = object : BroadcastReceiver(){
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            var servData = intent.getStringExtra("data")
+            Log.d("서비스","브로드캐스트 수신")
+            //브로드 캐스트를 수신하면 stopButton을 누른다.
+            binding.sendLocationBtnStopSend.callOnClick()
+        }
+    }
+
+    //onResume 호출될때 로컬브로드 캐스트 등록
+    override fun onResume() {
+        super.onResume()
+        var intentFilter : IntentFilter = IntentFilter()
+        intentFilter.addAction("service_down")
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter)
+
+        /** 액티비티 재실행시 버튼상태를 load해서 세팅한다. **/
+        loadData(this,binding)
+        Log.d("서비스","onResume()")
     }
 
     // 뒤로가기 두 번 연속 터치 시 종료
@@ -131,6 +149,8 @@ class SendLocationActivity : AppCompatActivity() {
         mBinding = null
         stopService(background)
         Log.d("서비스","두번째 액티비티 종료")
+        val stop = arrayOf(true,false)
+        saveData(stop,this@SendLocationActivity)
         super.onDestroy()
     }
 
