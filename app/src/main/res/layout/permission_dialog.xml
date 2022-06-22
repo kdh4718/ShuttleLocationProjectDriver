@@ -50,11 +50,28 @@
         android:paddingHorizontal="11dp"
         android:includeFontPadding="false"
         app:layout_constraintHorizontal_bias="0"
-        android:text="전송된 모든 위치 정보는 앱 종료 시 서버에서 즉시 삭제되며, 서비스 제공 이외의 목적으로 사용되지 않습니다."
+        android:text="셔틀위치 알리미 운전자용 앱은 백그라운드에서도 위치 정보를 전송할 수 있습니다. 따라서 위치 전송 시작 버튼을 클릭한 후, 다른 작업을 수행하는 것이 가능합니다."
         android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/permissionDialog_tv_content" />
+
+    <TextView
+        android:id="@+id/permissionDialog_tv_content_locinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="22dp"
+        android:fontFamily="@font/pretendard_regular"
+        android:textColor="@color/colorPrimary"
+        android:paddingHorizontal="11dp"
+        android:includeFontPadding="false"
+        app:layout_constraintHorizontal_bias="0"
+        android:text="전송된 모든 위치 정보는 앱 종료 시 서버에서 즉시 삭제되며, 서비스 제공 이외의 목적으로 사용되지 않습니다."
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/permissionDialog_tv_content_alert" />
 
     <TextView
         android:id="@+id/permissionDialog_btn_toSetting"
@@ -87,5 +104,5 @@
         android:textColor="@drawable/tv_d_buttontext_black"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/permissionDialog_tv_content_alert" />
+        app:layout_constraintTop_toBottomOf="@id/permissionDialog_tv_content_locinfo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
